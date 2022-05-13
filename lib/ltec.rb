@@ -33,7 +33,7 @@ module Ltec
         ec1 = OpenSSL::PKey::EC.generate(SECP256K1)
         seckey = EC.hexToBase64(ec1.private_key.to_s(16))
         pubkey = EC.hexToBase64(ec1.public_key.to_bn(:compressed).to_s(16))
-        return {"seckey" => seckey,"pubkey" => pubkey}
+        return {"seckey" => seckey.strip,"pubkey" => pubkey.strip}
     end 
     
     def EC.encrypt(pubKey,msg)

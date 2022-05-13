@@ -5,19 +5,19 @@ require_relative "lib/ltec/version"
 Gem::Specification.new do |spec|
   spec.name = "ltec"
   spec.version = Ltec::VERSION
-  spec.authors = ["liw003"]
-  spec.email = ["vgop@outlook.com"]
+  spec.authors = ["vitock"]
+  spec.email = [""]
 
   spec.summary = "using ECC to enrypt private message"
-  spec.description = "using ECC   to enrypt private message with ruby ,the curve isSECP256k1  "
+  spec.description = "using ECC  to enrypt private message with ruby ,the curve is SECP256k1  "
   spec.homepage = "https://github.com/vitock/ltec_rb.git"
   spec.required_ruby_version = ">= 2.6.0"
 
-  spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
+  # spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/vitock/ltec_rb.git"
-  spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
+  spec.metadata["changelog_uri"] = "https://github.com/vitock/ltec_rb/blob/master/README.md"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
