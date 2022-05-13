@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "ltec"
+
+# You can add fixtures and/or initialization code here to make experimenting
+# with your gem easier. You can also use a different console, if you like.
+
+# (If you use this, don't forget to add pry to your Gemfile!)
+# require "pry"
+# Pry.start
+
+require "ltec"
+cmd = ARGV[0]
+
+if cmd == 'g'
+    kp = Ltec::EC.generateKeyPair()
+    puts "publickey: #{kp['pubkey']}"
+    puts "privatekey: #{kp['seckey']}"
+elsif cmd == 'e'
+    pubkey = ARGV[1]
+    msg = ARGV[2]
+    enc = Ltec::EC.encrypt(pubkey,msg)
+    puts enc
+elsif cmd == 'd'
+    prikey = ARGV[1]
+    enc = ARGV[2]
+    msg = Ltec::EC.decrypt(prikey,enc)
+    puts msg
+
+else  
+    puts <<EOF
+    ltectool cmd [options]
+     commands
+       g   generate key pair
+       e    publickey   message
+       d    privatekey  message
+
+EOF
+end
+ 
