@@ -3,6 +3,10 @@
 a tinny tool to encryt your private message via ECC(Secp256k1)
 
 
+# upate 0.1.2
+using AES instead of Salsa20 
+
+
 ## Installation
 
 Install the gem and add to the application's Gemfile by executing:
