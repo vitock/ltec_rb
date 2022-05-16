@@ -74,7 +74,6 @@ module Ltec
 
         # encryptor = Salsa20.new(dhHash[0...32], nonce)
         encrypted_text = encryptor.update(msg) + encryptor.final
-        puts 1123
         dataforMac = nonce + empherPub + encrypted_text
         mac = OpenSSL::HMAC.digest('sha256', dhHash[32,64], dataforMac)
     
