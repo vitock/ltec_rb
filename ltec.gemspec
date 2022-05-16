@@ -35,7 +35,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "openssl", "~> 2.2.0"
   spec.add_dependency "base64", "~> 0.1.0"
-  spec.add_dependency "salsa20", "~> 0.1.3"
   
 
   # For more information and examples about making a new gem, check out our

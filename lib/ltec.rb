@@ -3,7 +3,6 @@
 require_relative "ltec/version"
 require 'openssl'
 require "base64"
-require 'salsa20'
 
 module Ltec
   class Error < StandardError; end
@@ -65,24 +64,35 @@ module Ltec
             
         dhHash = OpenSSL::Digest.digest("SHA512", ptX)
             
-        nonce = OpenSSL::Random.random_bytes(8)
-        encryptor = Salsa20.new(dhHash[0...32], nonce)
-        encrypted_text = encryptor.encrypt(msg)
-    
+        nonce = OpenSSL::Random.random_bytes(16)
+
+        encryptor = OpenSSL::Cipher::AES256.new(:CBC)
+        encryptor.encrypt
+        encryptor.key =  dhHash[0...32]
+        encryptor.iv =  nonce
+        
+
+        # encryptor = Salsa20.new(dhHash[0...32], nonce)
+        encrypted_text = encryptor.update(msg) + encryptor.final
+        puts 1123
         dataforMac = nonce + empherPub + encrypted_text
         mac = OpenSSL::HMAC.digest('sha256', dhHash[32,64], dataforMac)
     
         # 
-        return base64(fromHex('0300080020002100') + nonce + mac + empherPub + encrypted_text)
+        return base64(fromHex('0100100020002100') + nonce + mac + empherPub + encrypted_text)
             
     end
     
     def EC.decrypt(secKey,base64Cipher)
         encResult = base64Decode(base64Cipher)
-        nonce = encResult[8...16]
-        mac = encResult[16...48]
-        tmpPub = encResult[48...81]
-        dataEnc = encResult[81...encResult.length]
+        start = 8
+        nonce = encResult[start...(start + 16)] 
+        start = start + 16;
+        mac = encResult[start...(start + 32)]
+        start = start + 32;
+        tmpPub = encResult[start...(start + 33)]
+        start = start + 33;
+        dataEnc = encResult[start...(encResult.length)]
     
         tmpPubHex = toHex(tmpPub)
         ec = OpenSSL::PKey::EC.new(SECP256K1)
@@ -105,9 +115,13 @@ module Ltec
         if mac2 != mac 
             raise 'Mac not Fit,the privateKey is not fit'
         end
-            
-        encryptor = Salsa20.new(key, nonce)
-        txt = encryptor.decrypt(dataEnc)
+        # encryptor = Salsa20.new(key, nonce)
+        # txt = encryptor.decrypt(dataEnc)
+        encryptor = OpenSSL::Cipher::AES256.new(:CBC)
+        encryptor.decrypt
+        encryptor.key =  key
+        encryptor.iv =  nonce
+        txt = encryptor.update(dataEnc) + encryptor.final
         return txt
     end
   end
