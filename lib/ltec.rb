@@ -28,11 +28,43 @@ module Ltec
         return base64.unpack("m*")[0].unpack('H*')[0]
     end
     
-    def EC.generateKeyPair()
-        ec1 = OpenSSL::PKey::EC.generate(SECP256K1)
-        seckey = EC.hexToBase64(ec1.private_key.to_s(16))
-        pubkey = EC.hexToBase64(ec1.public_key.to_bn(:compressed).to_s(16))
-        return {"seckey" => seckey.strip,"pubkey" => pubkey.strip}
+    def EC.generateKeyPair(inputSecKey)
+        if inputSecKey 
+            puts "generate key pair from secret key"
+           if inputSecKey.length < 44   # 32 byte
+               throw "secret key length error ,it's 32 "
+               
+           end
+
+            ec = OpenSSL::PKey::EC.new(SECP256K1)
+            pubNum = OpenSSL::BN.new("1",16)
+            tmpPt = OpenSSL::PKey::EC::Point.new(ec.group)
+
+            priKey = OpenSSL::BN.new(toHex(base64Decode(inputSecKey)),16) 
+
+            maxStr = 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141'
+            OpenSSL
+            max = OpenSSL::BN.new(maxStr,16) 
+            if priKey >= max
+                throw "Private Key must be smaller than #{maxStr}"
+            end
+
+
+
+
+            pubPt =  tmpPt.mul(0,priKey)
+            hexpt = pubPt.to_bn(:compressed).to_s(16)
+            pub64 = hexToBase64(hexpt)
+
+            return {"seckey" => inputSecKey.strip,"pubkey" => pub64.strip}
+        else 
+            puts 'create New key pair'
+            ec1 = OpenSSL::PKey::EC.generate(SECP256K1)
+            seckey = EC.hexToBase64(ec1.private_key.to_s(16))
+            pubkey = EC.hexToBase64(ec1.public_key.to_bn(:compressed).to_s(16))
+            return {"seckey" => seckey.strip,"pubkey" => pubkey.strip}
+        end
+       
     end 
     
     def EC.encrypt(pubKey,msg)

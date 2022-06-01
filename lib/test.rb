@@ -2,7 +2,7 @@
 
 require_relative "ltec" 
 
-kp = Ltec::EC.generateKeyPair()
+kp = Ltec::EC.generateKeyPair(ARGV[0])
 puts kp 
 msg = "hello"
 msg2 = "hello world3"

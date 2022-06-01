@@ -15,7 +15,7 @@ require "ltec"
 cmd = ARGV[0]
 
 if cmd == 'g'
-    kp = Ltec::EC.generateKeyPair()
+    kp = Ltec::EC.generateKeyPair(ARGV[1])
     puts "publickey: #{kp['pubkey']}"
     puts "privatekey: #{kp['seckey']}"
 elsif cmd == 'e'
@@ -33,7 +33,7 @@ else
     puts <<EOF
     ltectool cmd [options]
      commands
-       g   generate key pair
+       g [privateKey]  generate key pair
        e    publickey   message
        d    privatekey  message
 
