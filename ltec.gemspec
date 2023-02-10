@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"
 
-  spec.add_dependency "openssl", "~> 2.2.0"
+  spec.add_dependency "openssl"
   spec.add_dependency "base64", "~> 0.1.0"
   
 
