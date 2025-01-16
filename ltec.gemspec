@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   # spec.add_dependency "example-gem", "~> 1.0"
 
   spec.add_dependency "openssl"
-  spec.add_dependency "base64", "~> 0.1.0"
+  # spec.add_dependency "base64", "~> 2.0.0"
   
 
   # For more information and examples about making a new gem, check out our

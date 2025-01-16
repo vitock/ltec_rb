@@ -28,6 +28,16 @@ elsif cmd == 'd'
     enc = ARGV[2]
     msg = Ltec::EC.decrypt(prikey,enc)
     puts msg
+elsif cmd == 'd64'
+    prikey = ARGV[1]
+    enc = ARGV[2]
+    msg = Ltec::EC.xDec(prikey,enc)
+    puts msg
+elsif cmd == 'e64'
+    pubkey = ARGV[1]
+    msg64 = ARGV[2]
+    msg = Ltec::EC.xEnc(pubkey,msg64)
+    puts msg
 
 else  
     puts <<EOF
@@ -36,6 +46,13 @@ else
        g [privateKey]  generate key pair
        e    publickey   message
        d    privatekey  message
+       e64    publickey   message64
+       d64    privatekey  cipher64
+
+       
+       --------------------
+       e.g. 
+       ltectool d64 privateKey  mesg64 | base64 -d
 
 EOF
 end

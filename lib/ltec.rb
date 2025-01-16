@@ -155,5 +155,60 @@ module Ltec
         txt = encryptor.update(dataEnc) + encryptor.final
         return txt
     end
+
+    def EC.test()
+       puts 'hello R'
+    end
+
+
+    def EC.xDec(priKey,msg)
+        priHex = base64ToHex(priKey)
+        prN = OpenSSL::BN.new(priHex,16)
+        bfMsg = base64Decode(msg)
+        pub = bfMsg[0,33]
+        pubhex = toHex(pub)
+        
+
+        
+        pubNum = OpenSSL::BN.new(pubhex,16)
+        curve = OpenSSL::PKey::EC::Group.new(SECP256K1)
+        ptPub = OpenSSL::PKey::EC::Point.new(curve,pubNum)
+
+        ptDh = ptPub.mul(prN)
+        ptX = fromHex(ptDh.to_bn(:compressed).to_s(16))[1...33]
+
+        dhHash = OpenSSL::Digest.digest("SHA512", ptX)
+        encryptor = OpenSSL::Cipher::AES256.new(:CTR)
+        encryptor.decrypt
+        encryptor.key =  dhHash[0...32]
+        encryptor.iv =  dhHash[32...48]
+
+        
+        EC.base64(encryptor.update(bfMsg[33..-1]) + encryptor.final)
+    end
+    def EC.xEnc(pubKey,msg64)
+        msg = base64Decode(msg64)
+        hex = base64ToHex(pubKey)
+
+
+        ec = OpenSSL::PKey::EC.new(SECP256K1)
+        curve = OpenSSL::PKey::EC::Group.new(SECP256K1)
+        kp = OpenSSL::PKey::EC::generate(curve)
+        pubNum = OpenSSL::BN.new(hex,16)
+        ptPub = OpenSSL::PKey::EC::Point.new(ec.group,pubNum)
+
+        rndBn = kp.private_key.to_bn
+        ptTmp = kp.public_key
+
+        ptDh =  ptPub.mul(rndBn)
+        ptX = fromHex(ptDh.to_bn(:compressed).to_s(16))[1...33]
+
+        dhHash = OpenSSL::Digest.digest("SHA512", ptX)
+        encryptor = OpenSSL::Cipher::AES256.new(:CTR)
+        encryptor.encrypt
+        encryptor.key =  dhHash[0...32]
+        encryptor.iv =  dhHash[32...48]
+        EC.base64( fromHex(ptTmp.to_bn(:compressed).to_s(16)) + encryptor.update(msg) + encryptor.final)
+    end
   end
 end
