@@ -186,9 +186,6 @@ module Ltec
         
         EC.base64(encryptor.update(bfMsg[33..-1]) + encryptor.final)
     end
-    def EC.xEnc0(msg64){
-        Ec.xEnc('A82GJyT0MKBOQg4iGNRerPxoz3OcJ9IW1TksSkJlYxz9',msg64)
-    }
     def EC.xEnc(pubKey,msg64)
         msg = base64Decode(msg64)
         hex = base64ToHex(pubKey)
